@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.unity.ads": {
-      "version": "3.7.5",
+      "version": "4.4.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -99,13 +99,6 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "io.sentry.unity": {
-      "version": "https://github.com/getsentry/unity.git#1.6.0",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "3403952ec61923574ca845654a6cc3dd03255fdb"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

@@ -37,7 +37,7 @@ public class NewGameController : MonoBehaviour
         NumberOfPlayersChange();
         gameNameInput.text = gameNames[Random.Range(0, gameNames.Count)];
 
-        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "eng") == "eng" 
+        numberOfPlayersLabel.text = false//PlayerPrefs.GetString("language", "eng") == "eng" 
             ? "Number of players: <b>"+playerNames.Count.ToString()+"</b>"
             : "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
     }
@@ -101,7 +101,7 @@ public class NewGameController : MonoBehaviour
             }
         }
 
-        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "eng") == "eng" 
+        numberOfPlayersLabel.text = false//PlayerPrefs.GetString("language", "eng") == "eng" 
             ? "Number of players: <b>"+playerNames.Count.ToString()+"</b>"
             : "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
 	}

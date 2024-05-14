@@ -4,7 +4,7 @@
 UnityConnectSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 1
-  m_Enabled: 0
+  m_Enabled: 1
   m_TestMode: 0
   m_EventOldUrl: https://api.uca.cloud.unity3d.com/v1/events
   m_EventUrl: https://cdp.cloud.unity3d.com/v1/events
@@ -30,8 +30,8 @@ UnityConnectSettings:
     m_IosGameId: 
     m_AndroidGameId: 
     m_GameIds:
-      AndroidPlayer: 5464773
-      iPhonePlayer: 5464772
-    m_GameId: 5464773
+      AndroidPlayer: 4236417
+      iPhonePlayer: 4236416
+    m_GameId: 4236417
   PerformanceReportingSettings:
     m_Enabled: 0
