@@ -9,6 +9,7 @@ public class DeleteNewQuestionsController : MonoBehaviour
 
     public void delete(){
         deleteConfirmPanel.SetActive(!deleteConfirmPanel.activeSelf);
+        MenuLanguageController.Translate();
     }
 
     public void confirmDelete(){

@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.IO;
+using System.Threading.Tasks;
 
 public class WishesDisplay : MonoBehaviour
 {
@@ -14,7 +16,16 @@ public class WishesDisplay : MonoBehaviour
 
     public List<string> usedWishes = new List<string>();
 
+    public GameInteraction game;
+
+    public OpenAIIntegration ai;
+
     public void Init(categories category){
+        game=GetComponent<GameInteraction>();
+        string categoryName = game.isSimpleGame 
+            ? PlayerPrefs.GetString("CategoryInQuickLevel")
+            : PlayerPrefs.GetString("CategoryInSavedLevel#"+game.levelId.ToString());
+
         wishesChild.Clear();
         wishesAdult.Clear();
         wishesInteresting.Clear();
@@ -33,7 +44,6 @@ public class WishesDisplay : MonoBehaviour
         loadAdditinalWishes(categories.all, wishes); 
     }
 
-
     public string getRandom(){
         if(wishes.Count==0){
             return getRandom();
@@ -51,19 +61,31 @@ public class WishesDisplay : MonoBehaviour
         }
     }
 
+    public async Task getAIWish(string currentCategoryName, Text text)
+    {
+        text.text = "...";
+        text.text = await ai.Ask("Category: " + currentCategoryName + ". Type: dare.", PlayerPrefs.GetString("language", "ukr"));
+    }
+
     public void setWishes(categories ctg){
         wishes.Clear();
         switch(ctg){
             case categories.child:
-                foreach(var child in wishesChild)wishes.Add(child);
+                foreach(var child in wishesChild){
+                    if(child.Length > 2)wishes.Add(child);
+                }
             break;
 
             case categories.adult:
-                foreach(var child in wishesAdult)wishes.Add(child);
+                foreach(var child in wishesAdult){
+                    if(child.Length > 2)wishes.Add(child);
+                }
             break;
 
             case categories.interesting:
-                foreach(var child in wishesInteresting)wishes.Add(child);
+                foreach(var child in wishesInteresting){
+                    if(child.Length > 2)wishes.Add(child);
+                }
             break;
 
             default:
@@ -155,7 +177,17 @@ public class WishesDisplay : MonoBehaviour
 
     public List<string> LoadAdultsFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("w_adult", typeof (TextAsset));
+        TextAsset theList;
+        
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("w_adult", typeof (TextAsset));
+        } else if (language == "pol"){
+            theList = (TextAsset)Resources.Load("pol/w_adult", typeof (TextAsset));
+        } else{
+            theList = (TextAsset)Resources.Load("eng/w_adult", typeof (TextAsset));
+        }
+
         string json = theList.text;
             
         JSONObject obj = JsonUtility.FromJson<JSONObject>(json)!;
@@ -167,7 +199,18 @@ public class WishesDisplay : MonoBehaviour
 
     public List<string> LoadChildFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("w_child", typeof (TextAsset));
+        TextAsset theList;
+        
+        var language = PlayerPrefs.GetString("language", "ukr");
+        Debug.Log(language);
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("w_child", typeof (TextAsset));
+        }else if (language == "pol"){
+            theList = (TextAsset)Resources.Load("pol/w_child", typeof (TextAsset));
+        }else{
+            theList = (TextAsset)Resources.Load("eng/w_child", typeof (TextAsset));
+        }
+
         string json = theList.text;
             
         JSONObject obj = JsonUtility.FromJson<JSONObject>(json)!;
@@ -179,7 +222,17 @@ public class WishesDisplay : MonoBehaviour
 
     public List<string> LoadInterestingFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("w_interesting", typeof (TextAsset));
+        TextAsset theList;
+        
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("w_interesting", typeof (TextAsset));
+        }else if (language == "pol"){
+            theList = (TextAsset)Resources.Load("pol/w_interesting", typeof (TextAsset));
+        }else{
+            theList = (TextAsset)Resources.Load("eng/w_interesting", typeof (TextAsset));
+        }
+
         string json = theList.text;
         
         JSONObject obj = JsonUtility.FromJson<JSONObject>(json)!;

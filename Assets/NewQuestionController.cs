@@ -8,9 +8,20 @@ public class NewQuestionController : MonoBehaviour
     public InputField input;
     public Dropdown category;
 
-    public Toggle radioQuestion, radioWish;
+    public Toggle radioQuestion, radioWish, radioAI;
 
     public Text success,error;
+
+    void Start(){
+        MenuLanguageController.Translate();
+
+        radioAI.isOn = PlayerPrefs.GetInt("AI_OFF", 0) == 0;
+    }
+
+    public void checkAI(bool state)
+    {
+        PlayerPrefs.SetInt("AI_OFF", state ? 0 : 1);
+    }
 
     public void checkType(bool question){
         // if(question){
@@ -32,6 +43,8 @@ public class NewQuestionController : MonoBehaviour
                 stopErrorAlert();
             }
             error.gameObject.SetActive(true);
+            MenuLanguageController.Translate();
+
             Invoke(nameof(stopErrorAlert),2f);
 
             return;
@@ -55,6 +68,7 @@ public class NewQuestionController : MonoBehaviour
                 stopErrorAlert();
             }
             error.gameObject.SetActive(true);
+            MenuLanguageController.Translate();
             Invoke(nameof(stopErrorAlert),2f);
 
             return;
@@ -80,6 +94,8 @@ public class NewQuestionController : MonoBehaviour
         }
 
         success.gameObject.SetActive(true);
+        MenuLanguageController.Translate();
+
         Invoke(nameof(stopSuccessAlert),2f);
 
     
@@ -97,7 +113,10 @@ public class NewQuestionController : MonoBehaviour
     public GameObject loadingPanel;
 
     public void openScene(int id){
+        PlayerPrefs.SetInt("studied", 1);
+        
         loadingPanel.SetActive(true);
+        MenuLanguageController.Translate();
         Application.LoadLevelAsync(id);
     }
 }

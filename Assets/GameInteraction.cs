@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.iOS;
 
 public class GameInteraction : InterstitialVideo
 {
@@ -30,8 +31,27 @@ public class GameInteraction : InterstitialVideo
 
     public bool isSimpleGame = false;
 
+    public int levelId;
+
+    public GameObject internetError;
+
+    public GameObject rateBox;
+
+    private string currentCategoryName;
+
+    public void Check()
+    {
+        if(Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            internetError.SetActive(true);
+        }
+        else{
+            internetError.SetActive(false);
+        }
+    }
+
     void Start(){
-        int levelId = PlayerPrefs.GetInt("CurrentLevel");
+        levelId = PlayerPrefs.GetInt("CurrentLevel");
 
         string gameName = PlayerPrefs.GetString("SavedLevel#"+levelId.ToString());
         string players = PlayerPrefs.GetString("PlayersInSavedLevel#"+levelId.ToString());
@@ -40,12 +60,14 @@ public class GameInteraction : InterstitialVideo
             ? PlayerPrefs.GetString("CategoryInQuickLevel")
             : PlayerPrefs.GetString("CategoryInSavedLevel#"+levelId.ToString());
 
+        currentCategoryName = categoryName;
+
         List<string> playersList = new List<string>(players.Split(','));
 
-        category.text=gameName + " - категорія " + categoryName.ToString();
+        category.text=categoryName.ToString();//gameName + " - " + categoryName.ToString();
 
         if(isSimpleGame){
-            category.text = "Категорія " + categoryName.ToString();
+            category.text = categoryName.ToString();
         }
 
         questionsManager.Init(CategoryController.FromString(categoryName));
@@ -55,7 +77,13 @@ public class GameInteraction : InterstitialVideo
 
         this.InitUnityAds();
         this.LoadAd();
+
+        MenuLanguageController.Translate();
+
+        Check();
     }
+
+    public int round=0;
 
     public void nextPlayer(){
         question.text="";
@@ -66,16 +94,61 @@ public class GameInteraction : InterstitialVideo
 
         currentPlayerController.HandleNext();
 
-        if(showAddCnt%2==0){
+        if(showAddCnt%2==1){
             if(! admob.showIntersitionalAd()){
                 this.ShowAd();
             }
         }
         showAddCnt++;
+
+        Check();
+
+        round++;
+
+        if (round % 3 == 0 && PlayerPrefs.GetInt("IsReviewed", 0) == 0)
+        {
+            Debug.Log("Asking for review");
+            var showedReviewPrompt = Device.RequestStoreReview();
+
+            if(showedReviewPrompt)
+            {
+                PlayerPrefs.SetInt("IsReviewed", 1);
+            }else
+            {
+                rateBox.SetActive(true);
+                MenuLanguageController.Translate();
+            }
+        }
+    }
+
+    public void Rate()
+    {
+        Application.OpenURL("https://apps.apple.com/ua/app/tod-truth-or-dare/id1669586398");
+        PlayerPrefs.SetInt("IsReviewed", 1);
+
+        rateBox.SetActive(false);
+    }
+
+    public void RateLater()
+    {
+        rateBox.SetActive(false);
+    }
+
+    public void DontRate()
+    {
+        PlayerPrefs.SetInt("IsReviewed", 1);
+        rateBox.SetActive(false);
     }
 
     public void chooseTruth(){
-        chosenOption.text="Правда";
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            chosenOption.text="Правда";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            chosenOption.text="Prawda";
+        } else {
+            chosenOption.text="Truth";
+        }
+
         Invoke(nameof(displayQuestion),0.5f);
 
         chooseOptionPanel.SetBool("open",false);
@@ -85,7 +158,14 @@ public class GameInteraction : InterstitialVideo
     }
 
     public void chooseWish(){
-        chosenOption.text="Дія";
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            chosenOption.text="Дія";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            chosenOption.text="Odważyć się";
+        } else {
+            chosenOption.text="Dare";
+        }
+
         Invoke(nameof(displayWish),0.5f);
 
         chooseOptionPanel.SetBool("open",false);
@@ -95,13 +175,33 @@ public class GameInteraction : InterstitialVideo
     }
 
 
+    public static int questionIndex = 0;
     public void displayQuestion(){
         question.gameObject.SetActive(true);
+
+        questionIndex++;
+        if (PlayerPrefs.GetInt("AI_OFF", 0) == 0 && questionIndex % 2 == 0)
+        {
+            question.text="";
+            questionsManager.getAIQuestion(currentCategoryName, question);
+            return;
+        }
+
         question.text=questionsManager.getRandom();
     }
 
+    public static int wishIndex = 0;
     public void displayWish(){
         question.gameObject.SetActive(true);
+
+        wishIndex++;
+        if (PlayerPrefs.GetInt("AI_OFF", 0) == 0 && wishIndex % 2 == 0)
+        {
+            question.text="";
+            wishesManager.getAIWish(currentCategoryName, question);
+            return;
+        }
+
         question.text=wishesManager.getRandom();
     }
 

@@ -28,9 +28,14 @@ public class CurrentPlayerController : MonoBehaviour
 
         currentIndex = PlayerPrefs.GetInt("CurrentpPlayerInGame#"+levelId.ToString(), 0);
 
-        currentPlayerText.text = true//PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Зараз: "+players[currentIndex].Split(':')[0]// + "'s turn"
-            : /*"Черга "+*/players[currentIndex].Split(':')[0];
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            currentPlayerText.text = "Зараз: "+players[currentIndex].Split(':')[0];
+        } else if (language == "pol"){
+            currentPlayerText.text = "Teraz: "+players[currentIndex].Split(':')[0];
+        } else{
+            currentPlayerText.text = "Now: "+players[currentIndex].Split(':')[0];
+        }
     }
 
     public void HandleNext(){
@@ -47,10 +52,14 @@ public class CurrentPlayerController : MonoBehaviour
 
         PlayerPrefs.SetInt("CurrentpPlayerInGame#"+levelId.ToString(), currentIndex);
 
-        currentPlayerText.text = true//PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Зараз: "+players[currentIndex].Split(':')[0]// + "'s turn"
-            : /*"Черга "+*/players[currentIndex].Split(':')[0];
-
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            currentPlayerText.text = "Зараз: "+players[currentIndex].Split(':')[0];
+        } else if (language == "pol"){
+            currentPlayerText.text = "Teraz: "+players[currentIndex].Split(':')[0];
+        } else{
+            currentPlayerText.text = "Now: "+players[currentIndex].Split(':')[0];
+        }
     }
 
     public string GetCurrent(){

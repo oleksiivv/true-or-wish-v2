@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class NewGameController : MonoBehaviour
 {
@@ -35,11 +36,15 @@ public class NewGameController : MonoBehaviour
         playerNamesValues = new List<string>();
 
         NumberOfPlayersChange();
-        gameNameInput.text = gameNames[Random.Range(0, gameNames.Count)];
+        //gameNameInput.text = gameNames[Random.Range(0, gameNames.Count)];
 
-        numberOfPlayersLabel.text = false//PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Number of players: <b>"+playerNames.Count.ToString()+"</b>"
-            : "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            numberOfPlayersLabel.text = "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            numberOfPlayersLabel.text = "Liczba graczy: <b>"+playerNames.Count.ToString()+"</b>";
+        } else {
+            numberOfPlayersLabel.text = "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
+        }
     }
 
     public void StartNewGame(){
@@ -51,7 +56,11 @@ public class NewGameController : MonoBehaviour
         int newLevelId = PlayerPrefs.GetInt("SavedLevelsNumber", -1) + 1;
         PlayerPrefs.SetInt("SavedLevelsNumber", newLevelId);
 
-        PlayerPrefs.SetString("SavedLevel#"+newLevelId.ToString(), gameNameInput.text);
+        DateTime dt = DateTime.Now;
+
+        Debug.Log(dt.ToString("HH:mm, MM-dd"));
+
+        PlayerPrefs.SetString("SavedLevel#"+newLevelId.ToString(), dt.ToString("MM-dd, HH:mm"));
 
         var players = new Dictionary<string, int>();
         foreach(var name in playerNamesValues){
@@ -94,37 +103,77 @@ public class NewGameController : MonoBehaviour
 
             playerNames.Add(input);
 
-            if (i<playerNamesValues.Count) {
+            if (i<playerNamesValues.Count && !(input.text.Contains("Гравець №") || input.text.Contains("Player №"))) {
                 input.text = playerNamesValues[i];
             } else {
-                input.text = "Гравець №"+(i+1).ToString();
+                input.text = "Player №"+(i+1).ToString();
             }
         }
 
-        numberOfPlayersLabel.text = false//PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Number of players: <b>"+playerNames.Count.ToString()+"</b>"
-            : "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            numberOfPlayersLabel.text = "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            numberOfPlayersLabel.text = "Liczba graczy: <b>"+playerNames.Count.ToString()+"</b>";
+        } else {
+            numberOfPlayersLabel.text = "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
+        }
 	}
 
     public void chooseCategoryChild(){
         category = categories.child;
+        CategoryController.currentCategory = category;
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            numberOfPlayersLabel.text = "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            numberOfPlayersLabel.text = "Liczba graczy: <b>"+playerNames.Count.ToString()+"</b>";
+        } else {
+            numberOfPlayersLabel.text = "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
+        }
     }
 
     public void chooseCategoryAdult(){
         category = categories.adult;
+        CategoryController.currentCategory = category;
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            numberOfPlayersLabel.text = "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            numberOfPlayersLabel.text = "Liczba graczy: <b>"+playerNames.Count.ToString()+"</b>";
+        } else {
+            numberOfPlayersLabel.text = "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
+        }
     }
 
     public void chooseCategoryInteresting(){
         category = categories.interesting;
+        CategoryController.currentCategory = category;
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            numberOfPlayersLabel.text = "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            numberOfPlayersLabel.text = "Liczba graczy: <b>"+playerNames.Count.ToString()+"</b>";
+        } else {
+            numberOfPlayersLabel.text = "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
+        }
     }
 
     public void chooseCategoryAll(){
@@ -132,6 +181,17 @@ public class NewGameController : MonoBehaviour
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        if (PlayerPrefs.GetString("language", "ukr") == "ukr") {
+            numberOfPlayersLabel.text = "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        } else if (PlayerPrefs.GetString("language", "ukr") == "pol") {
+            numberOfPlayersLabel.text = "Liczba graczy: <b>"+playerNames.Count.ToString()+"</b>";
+        } else {
+            numberOfPlayersLabel.text = "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
+        }
     }
 
     //

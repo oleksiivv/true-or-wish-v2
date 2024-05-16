@@ -55,6 +55,7 @@ public class SettingsController : MonoBehaviour
 
     public void SetPanelActive(bool active){
         panel.SetActive(active);
+        MenuLanguageController.Translate();
     }
 
     public void MusicOn(){

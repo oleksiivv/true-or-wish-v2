@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.IO;
+using System.Threading.Tasks;
 
 public class QuestionsDisplay : MonoBehaviour
 {
@@ -13,7 +15,18 @@ public class QuestionsDisplay : MonoBehaviour
     public List<string> questions = new List<string>();
     public List<string> usedQuestions=new List<string>();
 
+    public GameInteraction game;
+
+    public OpenAIIntegration ai;
+
     public void Init(categories category){
+        game=GetComponent<GameInteraction>();
+        string categoryName = game.isSimpleGame 
+            ? PlayerPrefs.GetString("CategoryInQuickLevel")
+            : PlayerPrefs.GetString("CategoryInSavedLevel#"+game.levelId.ToString());
+
+        Debug.Log(categoryName + "------------");
+
         questionsChild.Clear();
         questionsAdult.Clear();
         questionsInteresting.Clear();
@@ -26,7 +39,7 @@ public class QuestionsDisplay : MonoBehaviour
         loadAdditinalQuestions(categories.adult,questionsAdult);
         loadAdditinalQuestions(categories.interesting,questionsInteresting);
         
-        setQuestions(CategoryController.currentCategory);
+        setQuestions(category);
         loadAdditinalQuestions(categories.all, questions);
     }
 
@@ -57,23 +70,33 @@ public class QuestionsDisplay : MonoBehaviour
 
     public void setQuestions(categories ctg){
         questions.Clear();
+        Debug.Log(ctg);
+        Debug.Log(categories.interesting);
+        Debug.Log(categories.child);
+        Debug.Log(categories.adult);
         switch(ctg){
             case categories.child:
-                foreach(var child in questionsChild)questions.Add(child);
+                foreach(var child in questionsChild){
+                    if(child.Length > 2)questions.Add(child);
+                }
             break;
 
             case categories.adult:
-                foreach(var child in questionsAdult)questions.Add(child);
+                foreach(var child in questionsAdult){
+                    if(child.Length > 2)questions.Add(child);
+                }
             break;
 
             case categories.interesting:
-                foreach(var child in questionsInteresting)questions.Add(child);
+                foreach(var child in questionsInteresting){
+                    if(child.Length > 2)questions.Add(child);
+                }
             break;
 
             default:
-            foreach(var child in questionsChild)questions.Add(child);
-            foreach(var child in questionsAdult)questions.Add(child);
-            foreach(var child in questionsInteresting)questions.Add(child);
+            //foreach(var child in questionsChild)questions.Add(child);
+            //foreach(var child in questionsAdult)questions.Add(child);
+            //foreach(var child in questionsInteresting)questions.Add(child);
             break;
         }
     }
@@ -82,7 +105,6 @@ public class QuestionsDisplay : MonoBehaviour
         if(questions.Count==0){
             return getRandom();
         }
-
         else{
             string randomQuestion=questions[Random.Range(0,questions.Count)];
             if(usedQuestions.Contains(randomQuestion) && usedQuestions.Count*2<questions.Count){
@@ -92,6 +114,12 @@ public class QuestionsDisplay : MonoBehaviour
                 return randomQuestion;
             }
         }
+    }
+
+    public async Task getAIQuestion(string currentCategoryName, Text text)
+    {
+        text.text = "...";
+        text.text = await ai.Ask("Category: " + currentCategoryName + ". Type: question.", PlayerPrefs.GetString("language", "ukr"));
     }
 
     public IEnumerator getAllQuestions(categories ctg, List<string> list){
@@ -152,7 +180,17 @@ public class QuestionsDisplay : MonoBehaviour
 
     public List<string> LoadAdultsFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("adult", typeof (TextAsset));
+        TextAsset theList;
+        
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("adult", typeof (TextAsset));
+        }else if (language == "pol"){
+            theList = (TextAsset)Resources.Load("pol/adult", typeof (TextAsset));
+        }else {
+            theList = (TextAsset)Resources.Load("eng/adult", typeof (TextAsset));
+        }
+
         string json = theList.text;
             
         JSONObject obj = JsonUtility.FromJson<JSONObject>(json)!;
@@ -164,7 +202,17 @@ public class QuestionsDisplay : MonoBehaviour
 
     public List<string> LoadChildFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("child", typeof (TextAsset));
+        TextAsset theList;
+
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("child", typeof (TextAsset));
+        }else if (language == "pol"){
+            theList = (TextAsset)Resources.Load("pol/child", typeof (TextAsset));
+        }
+        else{
+            theList = (TextAsset)Resources.Load("eng/child", typeof (TextAsset));
+        }
 
         Debug.Log(theList);
 
@@ -179,7 +227,17 @@ public class QuestionsDisplay : MonoBehaviour
 
     public List<string> LoadInterestingFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("interesting", typeof (TextAsset));
+        TextAsset theList;
+
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("interesting", typeof (TextAsset));
+        } else if (language == "pol"){
+            theList = (TextAsset)Resources.Load("pol/interesting", typeof (TextAsset));
+        } else{
+            theList = (TextAsset)Resources.Load("eng/interesting", typeof (TextAsset));
+        }
+
         string json = theList.text;
         
         JSONObject obj = JsonUtility.FromJson<JSONObject>(json)!;

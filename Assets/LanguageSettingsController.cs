@@ -5,62 +5,73 @@ using UnityEngine.UI;
 
 public class LanguageSettingsController : MonoBehaviour
 {
-    public List<Image> ukrLanguageOptions, engLanguageOptions;
+    public List<Image> ukrLanguageOptions, engLanguageOptions, polLanguageOptions;
 
     public Color32 normalColor, chosenColor;
 
-    public MenuLanguageController menuLanguageController;
 
     public GameObject panel;
 
-    public StudyController study;
+    public AIPanelController ai;
 
-    public TimerSettingssController timer;
+    //public StudyController study;
+
+    //public TimerSettingssController timer;
 
     void Start(){
-        SwitchLanguageOptions();
-
         //SetPanelVisibility(false);
 
         if (PlayerPrefs.GetInt("FirstLaunch", 0) == 0){
             SetPanelVisibility(true);
+            SwitchLanguageOptions();
 
             PlayerPrefs.SetInt("FirstLaunch", 1);
         }
+
+        SwitchLanguageOptions();
     }
 
     public void SetPanelVisibility(bool active){
         panel.SetActive(active);
-
         if (!active){
             if (PlayerPrefs.GetInt("studied", 0) == 0){
-                study.SetPanelActive(true);
+                //study.SetPanelActive(true);
+                ai.SetActive(true);
                 PlayerPrefs.SetInt("studied", 1);
             }
         }
+        
+        SwitchLanguageOptions();
     }
 
     void SwitchLanguageOptions(){
-        if (PlayerPrefs.GetString("language", "eng") == "eng") {
-            foreach(var urkLangOption in ukrLanguageOptions){
-                urkLangOption.GetComponent<Image>().color = normalColor;
-            }
+        if (PlayerPrefs.GetString("language", "ukr") == "eng") {
+             SwitchLngColor(engLanguageOptions, chosenColor);
 
-            foreach(var engLangOption in engLanguageOptions){
-                engLangOption.GetComponent<Image>().color = chosenColor;
-            }
-        } else {
-            foreach(var urkLangOption in ukrLanguageOptions){
-                urkLangOption.GetComponent<Image>().color = chosenColor;
-            }
+             SwitchLngColor(ukrLanguageOptions, normalColor);
+             SwitchLngColor(polLanguageOptions, normalColor);
+        }
+        else if(PlayerPrefs.GetString("language", "ukr") == "pol") {
+             SwitchLngColor(polLanguageOptions, chosenColor);
 
-            foreach(var engLangOption in engLanguageOptions){
-                engLangOption.GetComponent<Image>().color = normalColor;
-            }
+             SwitchLngColor(ukrLanguageOptions, normalColor);
+             SwitchLngColor(engLanguageOptions, normalColor);
+         }
+         else {
+            SwitchLngColor(ukrLanguageOptions, chosenColor);
+
+            SwitchLngColor(polLanguageOptions, normalColor);
+            SwitchLngColor(engLanguageOptions, normalColor);
         }
 
-        menuLanguageController.Start();
-        timer.SwitchTimer();
+        MenuLanguageController.Translate();
+        //timer.SwitchTimer();
+    }
+
+    void SwitchLngColor(List<Image> options, Color32 color){
+        foreach(var option in options){
+               option.GetComponent<Image>().color = color;
+        }
     }
 
     public void ChoseUkr(){
@@ -71,6 +82,12 @@ public class LanguageSettingsController : MonoBehaviour
 
     public void ChoseEng(){
         PlayerPrefs.SetString("language", "eng");
+
+        SwitchLanguageOptions();
+    }
+
+    public void ChosePolish(){
+        PlayerPrefs.SetString("language", "pol");
 
         SwitchLanguageOptions();
     }
