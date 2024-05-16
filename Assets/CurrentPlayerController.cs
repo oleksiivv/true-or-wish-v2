@@ -28,9 +28,9 @@ public class CurrentPlayerController : MonoBehaviour
 
         currentIndex = PlayerPrefs.GetInt("CurrentpPlayerInGame#"+levelId.ToString(), 0);
 
-        currentPlayerText.text = true//PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Зараз: "+players[currentIndex].Split(':')[0]// + "'s turn"
-            : /*"Черга "+*/players[currentIndex].Split(':')[0];
+        currentPlayerText.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Зараз: "+players[currentIndex].Split(':')[0]
+            : "Now: "+players[currentIndex].Split(':')[0];
     }
 
     public void HandleNext(){
@@ -47,10 +47,9 @@ public class CurrentPlayerController : MonoBehaviour
 
         PlayerPrefs.SetInt("CurrentpPlayerInGame#"+levelId.ToString(), currentIndex);
 
-        currentPlayerText.text = true//PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Зараз: "+players[currentIndex].Split(':')[0]// + "'s turn"
-            : /*"Черга "+*/players[currentIndex].Split(':')[0];
-
+        currentPlayerText.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Зараз: "+players[currentIndex].Split(':')[0]
+            : "Now: "+players[currentIndex].Split(':')[0];
     }
 
     public string GetCurrent(){

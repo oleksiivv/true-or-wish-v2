@@ -12,6 +12,10 @@ public class NewQuestionController : MonoBehaviour
 
     public Text success,error;
 
+    void Start(){
+        MenuLanguageController.Translate();
+    }
+
     public void checkType(bool question){
         // if(question){
         //     radioQuestion.isOn=true;
@@ -32,6 +36,8 @@ public class NewQuestionController : MonoBehaviour
                 stopErrorAlert();
             }
             error.gameObject.SetActive(true);
+            MenuLanguageController.Translate();
+
             Invoke(nameof(stopErrorAlert),2f);
 
             return;
@@ -55,6 +61,7 @@ public class NewQuestionController : MonoBehaviour
                 stopErrorAlert();
             }
             error.gameObject.SetActive(true);
+            MenuLanguageController.Translate();
             Invoke(nameof(stopErrorAlert),2f);
 
             return;
@@ -80,6 +87,8 @@ public class NewQuestionController : MonoBehaviour
         }
 
         success.gameObject.SetActive(true);
+        MenuLanguageController.Translate();
+
         Invoke(nameof(stopSuccessAlert),2f);
 
     
@@ -98,6 +107,7 @@ public class NewQuestionController : MonoBehaviour
 
     public void openScene(int id){
         loadingPanel.SetActive(true);
+        MenuLanguageController.Translate();
         Application.LoadLevelAsync(id);
     }
 }

@@ -13,7 +13,14 @@ public class QuestionsDisplay : MonoBehaviour
     public List<string> questions = new List<string>();
     public List<string> usedQuestions=new List<string>();
 
+    public GameInteraction game;
+
     public void Init(categories category){
+        game=GetComponent<GameInteraction>();
+        string categoryName = game.isSimpleGame 
+            ? PlayerPrefs.GetString("CategoryInQuickLevel")
+            : PlayerPrefs.GetString("CategoryInSavedLevel#"+game.levelId.ToString());
+
         questionsChild.Clear();
         questionsAdult.Clear();
         questionsInteresting.Clear();
@@ -26,7 +33,7 @@ public class QuestionsDisplay : MonoBehaviour
         loadAdditinalQuestions(categories.adult,questionsAdult);
         loadAdditinalQuestions(categories.interesting,questionsInteresting);
         
-        setQuestions(CategoryController.currentCategory);
+        setQuestions(category);
         loadAdditinalQuestions(categories.all, questions);
     }
 
@@ -57,23 +64,30 @@ public class QuestionsDisplay : MonoBehaviour
 
     public void setQuestions(categories ctg){
         questions.Clear();
+        Debug.Log(ctg);
+        Debug.Log(categories.interesting);
+        Debug.Log(categories.child);
+        Debug.Log(categories.adult);
         switch(ctg){
             case categories.child:
-                foreach(var child in questionsChild)questions.Add(child);
+                foreach(var child in questionsChild){
+                    if(child.Length > 2)questions.Add(child);
+                }
             break;
 
             case categories.adult:
-                foreach(var child in questionsAdult)questions.Add(child);
+                foreach(var child in questionsAdult){
+                    if(child.Length > 2)questions.Add(child);
+                }
             break;
 
             case categories.interesting:
-                foreach(var child in questionsInteresting)questions.Add(child);
+                foreach(var child in questionsInteresting){
+                    if(child.Length > 2)questions.Add(child);
+                }
             break;
 
             default:
-            foreach(var child in questionsChild)questions.Add(child);
-            foreach(var child in questionsAdult)questions.Add(child);
-            foreach(var child in questionsInteresting)questions.Add(child);
             break;
         }
     }
@@ -152,7 +166,15 @@ public class QuestionsDisplay : MonoBehaviour
 
     public List<string> LoadAdultsFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("adult", typeof (TextAsset));
+        TextAsset theList;
+        
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("adult", typeof (TextAsset));
+        }else{
+            theList = (TextAsset)Resources.Load("eng/adult", typeof (TextAsset));
+        }
+
         string json = theList.text;
             
         JSONObject obj = JsonUtility.FromJson<JSONObject>(json)!;
@@ -164,7 +186,14 @@ public class QuestionsDisplay : MonoBehaviour
 
     public List<string> LoadChildFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("child", typeof (TextAsset));
+        TextAsset theList;
+
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("child", typeof (TextAsset));
+        }else{
+            theList = (TextAsset)Resources.Load("eng/child", typeof (TextAsset));
+        }
 
         Debug.Log(theList);
 
@@ -179,7 +208,15 @@ public class QuestionsDisplay : MonoBehaviour
 
     public List<string> LoadInterestingFromJson()
     {
-        TextAsset theList = (TextAsset)Resources.Load("interesting", typeof (TextAsset));
+        TextAsset theList;
+
+        var language = PlayerPrefs.GetString("language", "ukr");
+        if(language == "ukr") {
+            theList = (TextAsset)Resources.Load("interesting", typeof (TextAsset));
+        }else{
+            theList = (TextAsset)Resources.Load("eng/interesting", typeof (TextAsset));
+        }
+
         string json = theList.text;
         
         JSONObject obj = JsonUtility.FromJson<JSONObject>(json)!;

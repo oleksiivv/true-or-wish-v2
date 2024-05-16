@@ -19,22 +19,27 @@ public class MenuController : BaseController
 
     public void SetSavedGamesPanelVisibility(bool visible){
         savedGamesPanel.SetActive(visible);
+        MenuLanguageController.Translate();
     }
 
     public void SetNewGamePanelVisibility(bool visible){
         newGamePanel.SetActive(visible);
+        MenuLanguageController.Translate();
     }
 
     public void SetCategoryPanelVisibility(bool visible){
         categoryPanel.SetActive(visible);
+        MenuLanguageController.Translate();
     }
 
     public void SetCategoryForQuickGamePanelVisibility(bool visible){
         categoryForQuickGame.SetActive(visible);
+        MenuLanguageController.Translate();
     }
 
     public void SetSettingsVisibility(bool visible){
         settingsPanel.SetActive(visible);
+        MenuLanguageController.Translate();
     }
 
     public void OpenGame(int id){

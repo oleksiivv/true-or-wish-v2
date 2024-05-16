@@ -9,39 +9,40 @@ public class LanguageSettingsController : MonoBehaviour
 
     public Color32 normalColor, chosenColor;
 
-    public MenuLanguageController menuLanguageController;
 
     public GameObject panel;
 
-    public StudyController study;
+    //public StudyController study;
 
     public TimerSettingssController timer;
 
     void Start(){
-        SwitchLanguageOptions();
-
         //SetPanelVisibility(false);
 
         if (PlayerPrefs.GetInt("FirstLaunch", 0) == 0){
             SetPanelVisibility(true);
+            SwitchLanguageOptions();
 
             PlayerPrefs.SetInt("FirstLaunch", 1);
         }
+
+        SwitchLanguageOptions();
     }
 
     public void SetPanelVisibility(bool active){
         panel.SetActive(active);
+        SwitchLanguageOptions();
 
         if (!active){
             if (PlayerPrefs.GetInt("studied", 0) == 0){
-                study.SetPanelActive(true);
+                //study.SetPanelActive(true);
                 PlayerPrefs.SetInt("studied", 1);
             }
         }
     }
 
     void SwitchLanguageOptions(){
-        if (PlayerPrefs.GetString("language", "eng") == "eng") {
+        if (PlayerPrefs.GetString("language", "ukr") == "eng") {
             foreach(var urkLangOption in ukrLanguageOptions){
                 urkLangOption.GetComponent<Image>().color = normalColor;
             }
@@ -59,7 +60,7 @@ public class LanguageSettingsController : MonoBehaviour
             }
         }
 
-        menuLanguageController.Start();
+        MenuLanguageController.Translate();
         timer.SwitchTimer();
     }
 

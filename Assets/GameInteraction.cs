@@ -30,8 +30,10 @@ public class GameInteraction : InterstitialVideo
 
     public bool isSimpleGame = false;
 
+    public int levelId;
+
     void Start(){
-        int levelId = PlayerPrefs.GetInt("CurrentLevel");
+        levelId = PlayerPrefs.GetInt("CurrentLevel");
 
         string gameName = PlayerPrefs.GetString("SavedLevel#"+levelId.ToString());
         string players = PlayerPrefs.GetString("PlayersInSavedLevel#"+levelId.ToString());
@@ -42,10 +44,10 @@ public class GameInteraction : InterstitialVideo
 
         List<string> playersList = new List<string>(players.Split(','));
 
-        category.text=gameName + " - категорія " + categoryName.ToString();
+        category.text=gameName + " - " + categoryName.ToString();
 
         if(isSimpleGame){
-            category.text = "Категорія " + categoryName.ToString();
+            category.text = categoryName.ToString();
         }
 
         questionsManager.Init(CategoryController.FromString(categoryName));
@@ -55,6 +57,8 @@ public class GameInteraction : InterstitialVideo
 
         this.InitUnityAds();
         this.LoadAd();
+
+        MenuLanguageController.Translate();
     }
 
     public void nextPlayer(){
@@ -75,7 +79,7 @@ public class GameInteraction : InterstitialVideo
     }
 
     public void chooseTruth(){
-        chosenOption.text="Правда";
+        chosenOption.text=PlayerPrefs.GetString("language", "ukr") == "ukr" ? "Правда" : "Truth";
         Invoke(nameof(displayQuestion),0.5f);
 
         chooseOptionPanel.SetBool("open",false);
@@ -85,7 +89,7 @@ public class GameInteraction : InterstitialVideo
     }
 
     public void chooseWish(){
-        chosenOption.text="Дія";
+        chosenOption.text=PlayerPrefs.GetString("language", "ukr") == "ukr" ? "Дія" : "Dare";
         Invoke(nameof(displayWish),0.5f);
 
         chooseOptionPanel.SetBool("open",false);

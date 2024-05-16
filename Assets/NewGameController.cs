@@ -37,9 +37,9 @@ public class NewGameController : MonoBehaviour
         NumberOfPlayersChange();
         gameNameInput.text = gameNames[Random.Range(0, gameNames.Count)];
 
-        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Number of players: <b>"+playerNames.Count.ToString()+"</b>"
-            : "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>"
+            : "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
     }
 
     public void StartNewGame(){
@@ -94,37 +94,61 @@ public class NewGameController : MonoBehaviour
 
             playerNames.Add(input);
 
-            if (i<playerNamesValues.Count) {
+            if (i<playerNamesValues.Count && !(input.text.Contains("Гравець №") || input.text.Contains("Player №"))) {
                 input.text = playerNamesValues[i];
             } else {
-                input.text = "Гравець №"+(i+1).ToString();
+                input.text = "Player №"+(i+1).ToString();
             }
         }
 
-        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "eng") == "eng" 
-            ? "Number of players: <b>"+playerNames.Count.ToString()+"</b>"
-            : "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>";
+        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>"
+            : "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
 	}
 
     public void chooseCategoryChild(){
         category = categories.child;
+        CategoryController.currentCategory = category;
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>"
+            : "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
     }
 
     public void chooseCategoryAdult(){
         category = categories.adult;
+        CategoryController.currentCategory = category;
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>"
+            : "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
     }
 
     public void chooseCategoryInteresting(){
         category = categories.interesting;
+        CategoryController.currentCategory = category;
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>"
+            : "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
     }
 
     public void chooseCategoryAll(){
@@ -132,6 +156,13 @@ public class NewGameController : MonoBehaviour
 
         newGamePanel.SetActive(true);
         categoryPanel.SetActive(false);
+        MenuLanguageController.Translate();
+
+        NumberOfPlayersChange();
+
+        numberOfPlayersLabel.text = PlayerPrefs.GetString("language", "ukr") == "ukr" 
+            ? "Кількість гравців: <b>"+playerNames.Count.ToString()+"</b>"
+            : "Number of players: <b>"+playerNames.Count.ToString()+"</b>";
     }
 
     //
